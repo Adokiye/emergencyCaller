@@ -6,6 +6,7 @@ import 'package:emergencyCaller/models/contact.dart';
 import 'package:emergencyCaller/models/contactList.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:emergencyCaller/screens/addContact.dart';
+import 'package:flutter_phone_state/flutter_phone_state.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -23,7 +24,29 @@ class _MyHomePageState extends State<MyHomePage> {
   bool initialized = false;
   TextEditingController controller = new TextEditingController(); //09048455145
   bool showEmpty = false;
+  bool nextCall = true;
  
+ _makeCall(){
+   testLoop:
+   for(var i=0;i<list.items.length;i++){
+     if(nextCall){
+         final phoneCall = FlutterPhoneState.startPhoneCall(list.items[i].number);
+      phoneCall.eventStream.forEach((PhoneCallEvent event) {
+    print("Event $event");
+    if(event.status == 'connected'){
+      setState((){
+        nextCall = false;
+      });
+    }
+  });
+  print("Call is complete");
+     }else{
+      break testLoop;
+
+     }
+   
+   }
+ }
 
   @override
   void initState() {
@@ -51,17 +74,19 @@ class _MyHomePageState extends State<MyHomePage> {
               }
 
               if (!initialized) {
-                var items = storage.getItem('contacts');
-
+              //  var items = storage.getItem('contacts');
+               List<Contact> items = [Contact(title: 'Jong Mede', number: '2023030'),
+               Contact(title: 'Jong Yang', number: '2023033'),];
                 if (items != null) {
-                  list.items = List<Contact>.from(
-                    (items as List).map(
-                      (item) => Contact(
-                        title: item['title'],
-                        number: item['number'],
-                      ),
-                    ),
-                  );
+                  list.items = items;
+                  // list.items = List<Contact>.from(
+                  //   (items as List).map(
+                  //     (item) => Contact(
+                  //       title: item['title'],
+                  //       number: item['number'],
+                  //     ),
+                  //   ),
+                  // );
                 }else{
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -100,8 +125,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
               List<Widget> widgets = list.items.map((item) {
                 return Container(
-      padding: const EdgeInsets.all(10.0),
-      margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
+    //  padding: const EdgeInsets.all(10.0),
+      margin: const EdgeInsets.symmetric(vertical: 3.0),
       decoration: new BoxDecoration(
         borderRadius: new BorderRadius.all(new Radius.circular(15.0)),
         color: Colors.white,
@@ -141,9 +166,30 @@ class _MyHomePageState extends State<MyHomePage> {
                     flex: 1,
                     child: ListView(
                       children: widgets,
-                      itemExtent: 50.0,
+                    //  itemExtent: 50.0,
                     ),
                   ),
+                    Container(
+                        margin: EdgeInsets.only(top: 10.0),
+                        child: Material(
+                          color: Color(0xff1281dd),
+                          child: InkWell(
+                            onTap: (){ _makeCall();},
+                            child: Container(
+                              padding: EdgeInsets.all(10.0),
+                              width: 200,
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(5.0)
+                              ),
+                              child: Center(
+                                child: Text(
+                                'CALL', style: TextStyle(color: Colors.white, fontSize: 20.0),
+                              )),
+                            )
+                          )
+                        )
+                      )
                 ],
               );
             },

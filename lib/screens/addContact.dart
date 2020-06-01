@@ -58,6 +58,33 @@ class MyCustomFormState extends State<MyCustomForm> {
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final numberController = TextEditingController();
+    final ContactList list = new ContactList();
+
+
+  addContact() {
+    setState(() {
+      final item = new Contact(title: nameController.text, number: numberController.text);
+      list.items.add(item);
+     // _saveToStorage();
+    });
+  }
+
+  // _saveToStorage() {
+  //   storage.setItem('todos', list.toJSONEncodable());
+  // }
+
+
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    nameController.dispose();
+    numberController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +106,7 @@ margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
                   width: 1.0,
                 ),
               )),
-              child: new TextFormField(
+              child: new TextFormField( controller: nameController,
                 decoration: new InputDecoration(
                   labelText: "Name",
                   fillColor: Colors.white,
@@ -116,6 +143,7 @@ margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
                 ),
               )),
               child: new TextFormField(
+                controller: numberController,
                 decoration: new InputDecoration(
                   labelText: "Phone Number",
                   fillColor: Colors.white,
@@ -143,7 +171,23 @@ margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
                   height: 1.0,
                 ),
               )),
-          
+           Container(
+                        margin: EdgeInsets.only(top: 10.0),
+                        child: Material(
+                          color: Color(0xff1281dd),
+                          child: InkWell(
+                            onTap: (){ addContact();},
+                            child: Container(
+                              padding: EdgeInsets.all(10.0),
+                              width: MediaQuery.of(context).size.width * 0.80,
+                              color: Color(0xff1281dd),
+                              child: Text(
+                                'ADD', style: TextStyle(color: Colors.white),
+                              ),
+                            )
+                          )
+                        )
+                      )
         ],
       ),
      );
