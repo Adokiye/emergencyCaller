@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xenforo/helpers/color.dart';
-import 'package:xenforo/screens/home.dart';
+import 'package:emergencyCaller/helpers/color.dart';
+import 'package:emergencyCaller/screens/home.dart';
 
 void main() {
   runApp(MyApp());
