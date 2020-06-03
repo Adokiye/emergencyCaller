@@ -7,6 +7,8 @@ import 'package:emergencyCaller/models/contactList.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:emergencyCaller/screens/addContact.dart';
 import 'package:flutter_phone_state/flutter_phone_state.dart';
+import 'package:intent/intent.dart' as android_intent;
+import 'package:intent/action.dart' as android_action;
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
